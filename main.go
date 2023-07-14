@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"go-chat/front_api"
 	"io"
+	"log"
 	"net/http"
+	"os"
 
+	"github.com/joho/godotenv"
 	"golang.org/x/net/websocket"
 )
 
@@ -20,8 +23,6 @@ type Server struct {
 }
 
 func (s *Server) handleWS(ws *websocket.Conn) {
-	fmt.Println("new incoming connection from client:", ws.RemoteAddr())
-
 	s.conns[ws] = true
 
 	s.readLoop(ws)
@@ -57,8 +58,15 @@ func (s *Server) broadcast(b []byte) {
 }
 
 func main() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading environment variables file")
+	}
+
 	s := NewServer()
 	front_api.HandleEndPoints()
 	http.Handle("/ws", websocket.Handler(s.handleWS))
-	http.ListenAndServe(":3000", nil)
+	port := os.Getenv("PORT")
+	fmt.Println("listening on " + port)
+	http.ListenAndServe(":"+port, nil)
 }

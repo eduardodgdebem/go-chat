@@ -2,4 +2,7 @@ module go-chat
 
 go 1.20
 
-require golang.org/x/net v0.12.0
+require (
+	github.com/joho/godotenv v1.5.1
+	golang.org/x/net v0.12.0
+)
