@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.2"
+      integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>CHATZINHO</h1>
+    <input id="userName" placeholder="seu nome" />
+    <div hx-ext="ws" ws-connect="ws://localhost:3000/ws">
+      <form id="form" ws-send>
+        <input name="chat_message" />
+        <button>kjbk</button>
+      </form>
+      <ul id="chat_room" hx-swap-oob="beforeend">        
+      </ul>
+    </div>
+  </body>
+  <script refer>
+    document.body.addEventListener("htmx:wsConfigSend", function (evt) {
+      const userName = document.getElementById("userName").value;
+      console.log(userName);
+      evt.detail.messageBody =
+        userName + ":" + evt.detail.parameters.chat_message;
+    });
+  </script>
+</html>
