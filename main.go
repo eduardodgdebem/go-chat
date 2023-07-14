@@ -68,5 +68,7 @@ func main() {
 	http.Handle("/ws", websocket.Handler(s.handleWS))
 	port := os.Getenv("PORT")
 	fmt.Println("listening on " + port)
-	http.ListenAndServe(":"+port, nil)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatal(err)
+	}
 }
