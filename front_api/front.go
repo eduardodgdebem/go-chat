@@ -11,5 +11,6 @@ func handleDefault(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleEndPoints() {
+	http.Handle("/css/", http.FileServer(http.Dir("./htmx/")))
 	http.HandleFunc("/", handleDefault)
 }
