@@ -13,6 +13,13 @@ import (
 	"golang.org/x/net/websocket"
 )
 
+func parseMsgString(s string) string {
+	s = strings.ReplaceAll(s, "<", "&lt;")
+	s = strings.ReplaceAll(s, ">", "&gt;")
+
+	return s
+}
+
 func NewServer() *Server {
 	return &Server{
 		conns: make(map[*websocket.Conn]bool),
@@ -45,7 +52,9 @@ func (s *Server) readLoop(ws *websocket.Conn) {
 		bString := buf[:n]
 		msgStringWithUsername := string(bString[:])
 		stringParts := strings.SplitN(msgStringWithUsername, ":", 2)
-		msg := `<ul id="chat_room" hx-swap-oob="beforeend"><li class="message"><p class="username">` + stringParts[0] + `</p><p class="message_text">` + stringParts[1] + `</p></li></ul>`
+		name := stringParts[0]
+		textMsg := parseMsgString(stringParts[1])
+		msg := `<ul id="chat_room" hx-swap-oob="beforeend"><li class="message"><p class="username">` + name + `</p><p class="message_text">` + textMsg + `</p></li></ul>`
 		s.broadcast([]byte(msg))
 	}
 }
