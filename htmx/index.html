@@ -1,65 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <script
-      src="https://unpkg.com/htmx.org@1.9.2"
-      integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap"
-      rel="stylesheet"
-    />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <script
+            src="https://unpkg.com/htmx.org@1.9.2"
+            integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h"
+            crossorigin="anonymous"
+        ></script>
+        <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap"
+            rel="stylesheet"
+        />
 
-    <title>go-chat</title>
-  </head>
-  <body>
-    <main id="chat" hx-ext="ws" ws-connect="wss://go-chat-production-aebc.up.railway.app/ws">
-      <header id="chat_header">
-        <input id="userName" placeholder="seu nome" />
-      </header>
-      <ul id="chat_room" hx-swap-oob="beforeend"></ul>
-      <form id="form" ws-send>
-        <fieldset id="form_fieldset" disabled="false">
-          <input id="text_input" name="chat_message"/>
-          <button id="send_button">SEND</button>
-        </fieldset>
-      </form>
-    </main>
-  </body>
-  <script refer>
-    document.getElementById("userName").addEventListener("input", (evt) => {
-      const fieldset = document.getElementById("form_fieldset");
-      fieldset.disabled = !evt.data;
-    });
-    document.body.addEventListener("htmx:wsConfigSend", (evt) => {
-      const userName = document.getElementById("userName").value;
-      evt.detail.messageBody =
-        userName + ":" + evt.detail.parameters.chat_message;
-    });
-    document.body.addEventListener("htmx:wsAfterSend", (evt) => {
-      document.getElementById("text_input").value = "";
-    });
-    document.body.addEventListener("htmx:wsAfterMessage", (evt) => {
-      const messages = document.getElementsByClassName("message");
-      const clientUserName = document.getElementById("userName").value;
-      for (let i = 0; i < messages.length; i++) {
-        const usernameElement = messages[i].querySelector(".username");
-        const userName = usernameElement.textContent;
-        if (userName === clientUserName) {
-          messages[i].classList.add("client_message");
-        } else {
-          messages[i].classList.remove("client_message");
-        }
-      }
-      const lastMessage = messages[messages.length - 1]
-      lastMessage.scrollIntoView()
-    });
-  </script>
+        <title>go-chat</title>
+    </head>
+    <body>
+        <main
+            id="chat"
+            hx-ext="ws"
+            ws-connect="wss://go-chat-production-aebc.up.railway.app/ws"
+        >
+            <header id="chat_header">
+                <input id="userName" placeholder="seu nome" />
+            </header>
+            <ul id="chat_room" hx-swap-oob="beforeend"></ul>
+            <form id="form" ws-send>
+                <fieldset id="form_fieldset" disabled="false">
+                    <input id="text_input" name="chat_message" />
+                    <button id="send_button">SEND</button>
+                </fieldset>
+            </form>
+        </main>
+    </body>
+    <script refer>
+        document.getElementById("userName").addEventListener("input", (evt) => {
+            const fieldset = document.getElementById("form_fieldset");
+            fieldset.disabled = !evt.data;
+        });
+        document.body.addEventListener("htmx:wsConfigSend", (evt) => {
+            const userName = document.getElementById("userName").value;
+            evt.detail.messageBody =
+                userName + ":" + evt.detail.parameters.chat_message;
+        });
+        document.body.addEventListener("htmx:wsAfterSend", (evt) => {
+            document.getElementById("text_input").value = "";
+        });
+        document.body.addEventListener("htmx:wsAfterMessage", (evt) => {
+            const messages = document.getElementsByClassName("message");
+            const clientUserName = document.getElementById("userName").value;
+            for (let i = 0; i < messages.length; i++) {
+                const usernameElement = messages[i].querySelector(".username");
+                const userName = usernameElement.textContent;
+                if (userName === clientUserName) {
+                    messages[i].classList.add("client_message");
+                } else {
+                    messages[i].classList.remove("client_message");
+                }
+            }
+            const lastMessage = messages[messages.length - 1];
+            lastMessage.scrollIntoView();
+        });
+    </script>
 </html>
